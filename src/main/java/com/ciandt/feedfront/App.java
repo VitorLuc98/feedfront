@@ -19,7 +19,7 @@ public class App
         Employee novoEmployee3 = new Employee("Matheus","Cavalcante","matheuscavalcante@mail.com");
         Employee novoEmployee4 = new Employee("Daniel","Cerqueira","danielcerqueira@mail.com");
         Employee novoEmployee5 = new Employee("Rafael","Lopes","rafaellopes@mail.com");
-        Employee novoEmployee6 = new Employee("Thiago","Dutra","thiagodutra@mail.com");
+        Employee novoEmployee6 = new Employee("Thiago","Dutra","rafaellopes@mail.com");
 
         System.out.println("-------------------------------");
         try {
@@ -35,7 +35,7 @@ public class App
         }
         System.out.println("-------------------------------");
         System.out.println("Lista de Employees:");
-        Employee.listarEmployees().forEach(employee -> System.out.println(employee.toString()));
+        Employee.listarEmployees().forEach(System.out::println);
 
         System.out.println("-------------------------------");
 
@@ -65,6 +65,8 @@ public class App
         } catch (EmployeeNaoEncontradoException ex) {
             System.out.println(ex.getMessage());
         }
+
+        Employee.listarEmployees().forEach(System.out::println);
 
     }
 }
