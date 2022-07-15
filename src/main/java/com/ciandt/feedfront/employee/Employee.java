@@ -70,7 +70,7 @@ public class Employee implements Serializable {
     }
 
     public void setNome(String nome) throws ComprimentoInvalidoException {
-        verificaComprimento(sobrenome, "nome");
+        verificaComprimento(nome, "nome");
         this.nome = nome;
     }
 
@@ -119,8 +119,8 @@ public class Employee implements Serializable {
                 '}';
     }
     private void verificaComprimento(String atributo, String nomeAtributo) throws ComprimentoInvalidoException {
-        if (atributo.length() < 2){
-            throw new ComprimentoInvalidoException("Comprimento do "+nomeAtributo+" deve ser maior que 2 caracteres");
+        if (atributo.length() <= 2){
+            throw new ComprimentoInvalidoException("Comprimento do "+nomeAtributo+" deve ser maior que 2 caracteres.");
         }
     }
 
