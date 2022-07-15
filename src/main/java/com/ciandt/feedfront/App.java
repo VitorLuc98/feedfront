@@ -19,7 +19,7 @@ public class App
         Employee novoEmployee3 = new Employee("Matheus","Cavalcante","matheuscavalcante@mail.com");
         Employee novoEmployee4 = new Employee("Daniel","Cerqueira","danielcerqueira@mail.com");
         Employee novoEmployee5 = new Employee("Rafael","Lopes","rafaellopes@mail.com");
-        Employee novoEmployee6 = new Employee("Thiago","Dutra","rafaellopes@mail.com");
+        Employee novoEmployee6 = new Employee("Thiago","Dutra","thiagodutra@mail.com");
 
         System.out.println("-------------------------------");
         try {
@@ -66,7 +66,10 @@ public class App
             System.out.println(ex.getMessage());
         }
 
+        System.out.println("-------------------------------");
+        System.out.println("Listagem Final");
         Employee.listarEmployees().forEach(System.out::println);
+
 
     }
 }
