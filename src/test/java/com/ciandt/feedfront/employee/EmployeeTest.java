@@ -75,7 +75,8 @@ public class EmployeeTest {
     }
 
     @Test
-    public void apagarEmployee() throws ArquivoException, EmployeeNaoEncontradoException {
+    public void apagarEmployee() throws ArquivoException, EmployeeNaoEncontradoException, EmailInvalidoException {
+        Employee.salvarEmployee(employee1);
         String id = employee1.getId();
         Employee.apagarEmployee(id);
 
@@ -84,7 +85,7 @@ public class EmployeeTest {
         });
 
         String mensagemRecebida = employeeNaoEncontradoException.getMessage();
-        String mensagemEsperada = "Employee não existe no repositório";
+        String mensagemEsperada = "Employee não encontrado";
         assertEquals(mensagemEsperada, mensagemRecebida);
     }
 

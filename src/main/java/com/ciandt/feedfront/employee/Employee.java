@@ -6,6 +6,8 @@ import com.ciandt.feedfront.excecoes.EmailInvalidoException;
 import com.ciandt.feedfront.excecoes.EmployeeNaoEncontradoException;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,12 +23,12 @@ public class Employee implements Serializable {
     private static final String REPOSITORIO_PATH= "src/main/resources/";
     private static List<Employee> employees = new ArrayList<>();
 
-    String arquivoCriado = "arquivo.extensao"; //TODO: alterar de acordo com a sua implementação
+    private String arquivoCriado = "arquivo.extensao"; //TODO: alterar de acordo com a sua implementação
 
     public Employee(String nome, String sobrenome, String email) throws ComprimentoInvalidoException {
-        this.id = UUID.randomUUID().toString();
         verificaComprimento(nome, "nome");
         verificaComprimento(sobrenome, "sobrenome");
+        this.id = UUID.randomUUID().toString();
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.email = email;
@@ -34,12 +36,11 @@ public class Employee implements Serializable {
     }
 
     public static Employee salvarEmployee(Employee employee) throws ArquivoException, EmailInvalidoException {
-        if (employees.stream().anyMatch(x -> x.getEmail().equals(employee.getEmail()))){
-            throw new EmailInvalidoException("E-mail já cadastrado no repositorio");
+        if (listarEmployees().stream().anyMatch(x -> x.getEmail().equals(employee.getEmail()))){
+            throw new EmailInvalidoException("E-mail ja cadastrado no repositorio");
         }
-        serializeEmployees(employee);
         employees.add(employee);
-        deserializeEmployees(employee);
+        serializeEmployee(employee);
         return employee;
     }
 
@@ -48,6 +49,7 @@ public class Employee implements Serializable {
         employee1.setNome(employee.getNome());
         employee1.setSobrenome(employee.getSobrenome());
         employee1.setEmail(employee.getEmail());
+        serializeEmployee(employee1);
         return employee1;
     }
 
@@ -56,12 +58,16 @@ public class Employee implements Serializable {
     }
 
     public static Employee buscarEmployee(String id) throws ArquivoException, EmployeeNaoEncontradoException {
-        return employees.stream().filter(x -> x.getId().equals(id)).
-                findFirst().orElseThrow( () -> new EmployeeNaoEncontradoException("Employee não encontrado"));
+        return deserializeEmployee(id);
     }
 
     public static void apagarEmployee(String id) throws ArquivoException, EmployeeNaoEncontradoException {
         Employee employee = buscarEmployee(id);
+        try {
+            Files.delete(Paths.get(employee.arquivoCriado));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         employees.remove(employee);
     }
 
@@ -95,6 +101,10 @@ public class Employee implements Serializable {
         return id;
     }
 
+    public String getArquivoCriado() {
+        return arquivoCriado;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -124,7 +134,7 @@ public class Employee implements Serializable {
         }
     }
 
-    private static void serializeEmployees(Employee employee) throws ArquivoException {
+    private static void serializeEmployee(Employee employee) throws ArquivoException {
         ObjectOutputStream objectOutputStream = null;
         try {
             objectOutputStream = new ObjectOutputStream(new FileOutputStream(employee.arquivoCriado));
@@ -135,14 +145,16 @@ public class Employee implements Serializable {
         }
     }
 
-    private static void deserializeEmployees(Employee employee) throws ArquivoException {
+    private static Employee deserializeEmployee(String idEmployee) throws ArquivoException {
         ObjectInputStream objstream = null;
+        Employee employee = null;
         try {
-            objstream = new ObjectInputStream(new FileInputStream(employee.arquivoCriado));
-            Employee employee1 = (Employee) objstream.readObject();
+            objstream = new ObjectInputStream(new FileInputStream(REPOSITORIO_PATH+idEmployee+".bytes"));
+            employee = (Employee) objstream.readObject();
             objstream.close();
         } catch (IOException | ClassNotFoundException e) {
             throw new ArquivoException("");
         }
+        return employee;
     }
 }

@@ -40,8 +40,8 @@ public class App
         System.out.println("-------------------------------");
 
         try {
-            System.out.println("Busca com Employee com id: " + novoEmployee1.getId());
-            System.out.println(Employee.buscarEmployee(novoEmployee1.getId()).toString());
+            System.out.println("Busca com Employee com id: " + novoEmployee4.getId());
+            System.out.println(Employee.buscarEmployee(novoEmployee4.getId()).toString());
 
         } catch (EmployeeNaoEncontradoException | ArquivoException ex) {
             System.out.println(ex.getMessage());
