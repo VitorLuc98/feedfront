@@ -4,7 +4,6 @@ package com.ciandt.feedfront.services;
 import com.ciandt.feedfront.contracts.DAO;
 import com.ciandt.feedfront.contracts.Service;
 import com.ciandt.feedfront.excecoes.*;
-import com.ciandt.feedfront.models.Employee;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

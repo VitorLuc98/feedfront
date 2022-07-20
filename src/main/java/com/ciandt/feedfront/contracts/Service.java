@@ -2,7 +2,6 @@ package com.ciandt.feedfront.contracts;
 
 import com.ciandt.feedfront.excecoes.ArquivoException;
 import com.ciandt.feedfront.excecoes.BusinessException;
-import com.ciandt.feedfront.models.Employee;
 
 import java.util.List;
 
