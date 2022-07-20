@@ -7,11 +7,14 @@ import com.ciandt.feedfront.excecoes.EmployeeNaoEncontradoException;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Employee implements Serializable {
     private static final long serialVersionUID = 1l;
@@ -20,23 +23,23 @@ public class Employee implements Serializable {
     private String sobrenome;
     private String email;
 
-    private static final String REPOSITORIO_PATH= "src/main/resources/";
+    private static final String REPOSITORIO_PATH = "src/main/resources/";
     private static List<Employee> employees = new ArrayList<>();
 
     private String arquivoCriado = "arquivo.extensao"; //TODO: alterar de acordo com a sua implementação
 
     public Employee(String nome, String sobrenome, String email) throws ComprimentoInvalidoException {
-        verificaComprimento(nome, "nome");
-        verificaComprimento(sobrenome, "sobrenome");
+        setNome(nome);
+        setSobrenome(sobrenome);
         this.id = UUID.randomUUID().toString();
         this.nome = nome;
         this.sobrenome = sobrenome;
         this.email = email;
-        arquivoCriado = REPOSITORIO_PATH+this.id+".bytes";
+        arquivoCriado = REPOSITORIO_PATH + this.id + ".byte";
     }
 
     public static Employee salvarEmployee(Employee employee) throws ArquivoException, EmailInvalidoException {
-        if (listarEmployees().stream().anyMatch(x -> x.getEmail().equals(employee.getEmail()))){
+        if (listarEmployees().stream().anyMatch(x -> !x.getId().equals(employee.getId()) && x.getEmail().equals(employee.getEmail()))) {
             throw new EmailInvalidoException("E-mail ja cadastrado no repositorio");
         }
         employees.add(employee);
@@ -45,15 +48,30 @@ public class Employee implements Serializable {
     }
 
     public static Employee atualizarEmployee(Employee employee) throws ArquivoException, EmailInvalidoException, EmployeeNaoEncontradoException, ComprimentoInvalidoException {
-        Employee employee1 = buscarEmployee(employee.getId());
-        employee1.setNome(employee.getNome());
-        employee1.setSobrenome(employee.getSobrenome());
-        employee1.setEmail(employee.getEmail());
-        serializeEmployee(employee1);
-        return employee1;
+        buscarEmployee(employee.getId());
+        return salvarEmployee(employee);
     }
 
     public static List<Employee> listarEmployees() throws ArquivoException {
+        try {
+            Stream<Path> paths = Files.walk(Paths.get(REPOSITORIO_PATH));
+            List<String> files = paths
+                    .map(p -> p.getFileName().toString())
+                    .filter(p -> p.endsWith(".byte"))
+                    .map(y -> y.replace(REPOSITORIO_PATH, ""))
+                    .map(p -> p.replace(".byte", ""))
+                    .collect(Collectors.toList());
+            files.stream().map(y -> {
+                try {
+                    return employees.add(buscarEmployee(y));
+                } catch (ArquivoException | EmployeeNaoEncontradoException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            paths.close();
+        } catch (IOException e) {
+            throw new ArquivoException("");
+        }
         return employees;
     }
 
@@ -65,10 +83,10 @@ public class Employee implements Serializable {
         Employee employee = buscarEmployee(id);
         try {
             Files.delete(Paths.get(employee.arquivoCriado));
+            employees.remove(employee);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        employees.remove(employee);
     }
 
     public String getNome() {
@@ -128,9 +146,10 @@ public class Employee implements Serializable {
                 ", arquivoCriado='" + arquivoCriado + '\'' +
                 '}';
     }
+
     private void verificaComprimento(String atributo, String nomeAtributo) throws ComprimentoInvalidoException {
-        if (atributo.length() <= 2){
-            throw new ComprimentoInvalidoException("Comprimento do "+nomeAtributo+" deve ser maior que 2 caracteres.");
+        if (atributo.length() <= 2) {
+            throw new ComprimentoInvalidoException("Comprimento do " + nomeAtributo + " deve ser maior que 2 caracteres.");
         }
     }
 
@@ -145,15 +164,15 @@ public class Employee implements Serializable {
         }
     }
 
-    private static Employee deserializeEmployee(String idEmployee) throws ArquivoException {
+    private static Employee deserializeEmployee(String idEmployee) throws ArquivoException, EmployeeNaoEncontradoException {
         ObjectInputStream objstream = null;
         Employee employee = null;
         try {
-            objstream = new ObjectInputStream(new FileInputStream(REPOSITORIO_PATH+idEmployee+".bytes"));
+            objstream = new ObjectInputStream(new FileInputStream(REPOSITORIO_PATH + idEmployee + ".byte"));
             employee = (Employee) objstream.readObject();
             objstream.close();
         } catch (IOException | ClassNotFoundException e) {
-            throw new ArquivoException("");
+            throw new EmployeeNaoEncontradoException("Employee não encontrado");
         }
         return employee;
     }
