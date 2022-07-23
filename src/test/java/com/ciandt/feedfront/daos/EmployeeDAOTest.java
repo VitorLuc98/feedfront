@@ -2,6 +2,7 @@ package com.ciandt.feedfront.daos;
 
 import com.ciandt.feedfront.contracts.DAO;
 import com.ciandt.feedfront.excecoes.ComprimentoInvalidoException;
+import com.ciandt.feedfront.models.Employee;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 

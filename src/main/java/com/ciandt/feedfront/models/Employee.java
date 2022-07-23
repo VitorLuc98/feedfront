@@ -23,10 +23,8 @@ public class Employee implements Serializable {
     private String sobrenome;
     private String email;
 
-    private static final String REPOSITORIO_PATH = "src/main/resources/";
-    private static List<Employee> employees = new ArrayList<>();
-
-    private String arquivoCriado = "arquivo.extensao"; //TODO: alterar de acordo com a sua implementação
+    private static final String REPOSITORIO_PATH = "src/main/resources/data/employee/";
+    private String arquivoCriado;
 
     public Employee(String nome, String sobrenome, String email) throws ComprimentoInvalidoException {
         setNome(nome);
@@ -39,36 +37,32 @@ public class Employee implements Serializable {
     }
 
     public static Employee salvarEmployee(Employee employee) throws ArquivoException, EmailInvalidoException {
-        if (listarEmployees().stream().anyMatch(x -> !x.getId().equals(employee.getId()) && x.getEmail().equals(employee.getEmail()))) {
+        if (isEmailUnico(listarEmployees(), employee)) {
             throw new EmailInvalidoException("E-mail ja cadastrado no repositorio");
         }
-        employees.add(employee);
         serializeEmployee(employee);
         return employee;
     }
 
-    public static Employee atualizarEmployee(Employee employee) throws ArquivoException, EmailInvalidoException, EmployeeNaoEncontradoException, ComprimentoInvalidoException {
+    public static Employee atualizarEmployee(Employee employee) throws ArquivoException, EmailInvalidoException, EmployeeNaoEncontradoException {
         buscarEmployee(employee.getId());
         return salvarEmployee(employee);
     }
 
     public static List<Employee> listarEmployees() throws ArquivoException {
+        List<Employee> employees = new ArrayList<>();
         try {
-            Stream<Path> paths = Files.walk(Paths.get(REPOSITORIO_PATH));
-            List<String> files = paths
-                    .map(p -> p.getFileName().toString())
-                    .filter(p -> p.endsWith(".byte"))
-                    .map(y -> y.replace(REPOSITORIO_PATH, ""))
-                    .map(p -> p.replace(".byte", ""))
-                    .collect(Collectors.toList());
-            files.stream().map(y -> {
+            Stream<Path> repoPath = Files.walk(Paths.get(REPOSITORIO_PATH));
+            List<String> files = buscarArquivosPorPath(repoPath);
+
+            files.stream().forEach(file -> {
                 try {
-                    return employees.add(buscarEmployee(y));
-                } catch (ArquivoException | EmployeeNaoEncontradoException e) {
+                    employees.add(buscarEmployee(file));
+                } catch (EmployeeNaoEncontradoException | ArquivoException e) {
                     throw new RuntimeException(e);
                 }
             });
-            paths.close();
+            repoPath.close();
         } catch (IOException e) {
             throw new ArquivoException("");
         }
@@ -83,7 +77,7 @@ public class Employee implements Serializable {
         Employee employee = buscarEmployee(id);
         try {
             Files.delete(Paths.get(employee.arquivoCriado));
-            employees.remove(employee);
+            listarEmployees().remove(employee);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -176,4 +170,17 @@ public class Employee implements Serializable {
         }
         return employee;
     }
+
+    private static boolean isEmailUnico(List<Employee> employees, Employee employeeSalva){
+        return employees.stream().anyMatch(x -> !x.getId().equals(employeeSalva.getId()) && x.getEmail().equals(employeeSalva.getEmail()));
+    }
+
+    private static List<String> buscarArquivosPorPath(Stream<Path> paths){
+        return paths.map(p -> p.getFileName().toString())
+                .filter(p -> p.endsWith(".byte"))
+                .map(y -> y.replace(REPOSITORIO_PATH, ""))
+                .map(p -> p.replace(".byte", ""))
+                .collect(Collectors.toList());
+    }
 }
+
