@@ -11,28 +11,30 @@ public class EmployeeController {
     private Service<Employee> service;
 
     public EmployeeController() {
-        throw new UnsupportedOperationException();
+        setService(service);
     }
 
     public List<Employee> listar() throws ArquivoException {
-        throw new UnsupportedOperationException();
+        return service.listar();
     }
 
     public Employee buscar(String id) throws BusinessException, ArquivoException {
-        throw new UnsupportedOperationException();
+        return service.buscar(id);
     }
 
     public Employee salvar(Employee employee) throws BusinessException, ArquivoException {
-        throw new UnsupportedOperationException();
+        return service.salvar(employee);
     }
 
     public Employee atualizar(Employee employee) throws BusinessException, ArquivoException {
-        throw new UnsupportedOperationException();
+        return service.atualizar(employee);
     }
 
     public void apagar(String id) throws BusinessException, ArquivoException {
-        throw new UnsupportedOperationException();
+         service.apagar(id);
     }
 
-    public void setService(Service<Employee> service) {}
+    public void setService(Service<Employee> service) {
+        this.service = service;
+    }
 }
