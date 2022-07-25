@@ -3,7 +3,7 @@ package com.ciandt.feedfront.daos;
 import com.ciandt.feedfront.contracts.DAO;
 import com.ciandt.feedfront.excecoes.ArquivoException;
 import com.ciandt.feedfront.excecoes.EntidadeNaoSerializavelException;
-import com.ciandt.feedfront.models.Employee;
+import com.ciandt.feedfront.models.Feedback;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -14,25 +14,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class EmployeeDAO implements DAO<Employee> {
+public class FeedbackDAO implements DAO<Feedback> {
 
-    private static final String REPOSITORIO_PATH = "src/main/resources/data/employee/";
+    private static final String REPOSITORIO_PATH = "src/main/resources/data/feedback/";
 
     @Override
     public boolean tipoImplementaSerializable() {
-        throw new UnsupportedOperationException();
+        return false;
     }
 
     @Override
-    public List<Employee> listar() throws IOException, EntidadeNaoSerializavelException {
-        List<Employee> employees = new ArrayList<>();
+    public List<Feedback> listar() throws IOException, EntidadeNaoSerializavelException {
+        List<Feedback> feedbacks = new ArrayList<>();
         try {
             Stream<Path> repoPath = Files.walk(Paths.get(REPOSITORIO_PATH));
             List<String> files = buscarArquivosPorPath(repoPath);
 
             files.stream().forEach(file -> {
                 try {
-                    employees.add(buscar(file));
+                    feedbacks.add(buscar(file));
                 } catch (EntidadeNaoSerializavelException | IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -41,47 +41,48 @@ public class EmployeeDAO implements DAO<Employee> {
         } catch (IOException e) {
             throw new ArquivoException("");
         }
-        return employees;
+        return feedbacks;
     }
 
     @Override
-    public Employee buscar(String id) throws IOException, EntidadeNaoSerializavelException{
+    public Feedback buscar(String id) throws IOException, EntidadeNaoSerializavelException {
         ObjectInputStream objstream = null;
-        Employee employee = null;
+        Feedback feedback = null;
         try {
             objstream = new ObjectInputStream(new FileInputStream(REPOSITORIO_PATH + id + ".byte"));
-            employee = (Employee) objstream.readObject();
+            feedback = (Feedback) objstream.readObject();
             objstream.close();
         } catch (IOException | ClassNotFoundException e) {
-            throw new IOException();
+            throw new EntidadeNaoSerializavelException();
         }
-        return employee;
+        return feedback;
     }
 
     @Override
-    public Employee salvar(Employee employee) throws IOException, EntidadeNaoSerializavelException {
+    public Feedback salvar(Feedback feedback) throws IOException, EntidadeNaoSerializavelException {
         ObjectOutputStream objectOutputStream = null;
         try {
-            objectOutputStream = new ObjectOutputStream(new FileOutputStream(employee.getArquivoCriado()));
-            objectOutputStream.writeObject(employee);
+            objectOutputStream = new ObjectOutputStream(new FileOutputStream(feedback.getArquivo()));
+            objectOutputStream.writeObject(feedback);
             objectOutputStream.close();
         } catch (IOException e) {
             throw new EntidadeNaoSerializavelException();
         }
-        return employee;
+        return feedback;
     }
 
     @Override
     public boolean apagar(String id) throws IOException, EntidadeNaoSerializavelException {
         try{
-            Employee employee = buscar(id);
-            Files.delete(Paths.get(employee.getArquivoCriado()));
-            listar().remove(employee);
+            Feedback feedback = buscar(id);
+            Files.delete(Paths.get(feedback.getArquivo()));
+            listar().remove(feedback);
         }catch (IOException e){
-           throw new EntidadeNaoSerializavelException();
+            throw new EntidadeNaoSerializavelException();
         }
         return true;
     }
+
     private List<String> buscarArquivosPorPath(Stream<Path> paths){
         return paths.map(p -> p.getFileName().toString())
                 .filter(p -> p.endsWith(".byte"))

@@ -4,6 +4,7 @@ package com.ciandt.feedfront.services;
 import com.ciandt.feedfront.contracts.DAO;
 import com.ciandt.feedfront.contracts.Service;
 import com.ciandt.feedfront.excecoes.*;
+import com.ciandt.feedfront.models.Employee;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -80,12 +81,12 @@ public class EmployeeServiceTest {
         Exception exception1 = assertThrows(EmailInvalidoException.class, () -> employeeService.salvar(employeeInvalido));
         Exception exception2 = assertThrows(IllegalArgumentException.class, () -> employeeService.salvar(null));
 
-        assertEquals("já existe um employee cadastrado com esse e-mail", exception1.getMessage());
+        assertEquals("E-mail ja cadastrado no repositorio", exception1.getMessage());
         assertEquals("employee inválido", exception2.getMessage());
     }
 
     @Test
-    public void atualizar() throws IOException, ComprimentoInvalidoException, BusinessException, ArquivoException {
+    public void atualizar() throws IOException, BusinessException {
         Employee employee2 = new Employee("Bruno", "Silveira", "b.silveira@email.com");
         Employee employee3 = new Employee("Vitor", "Fernandes", "vf.silveira@email.com");
 

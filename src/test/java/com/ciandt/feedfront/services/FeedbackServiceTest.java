@@ -5,6 +5,7 @@ import com.ciandt.feedfront.excecoes.ArquivoException;
 import com.ciandt.feedfront.excecoes.BusinessException;
 import com.ciandt.feedfront.excecoes.ComprimentoInvalidoException;
 import com.ciandt.feedfront.excecoes.EntidadeNaoEncontradaException;
+import com.ciandt.feedfront.models.Employee;
 import com.ciandt.feedfront.models.Feedback;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ public class FeedbackServiceTest {
     private Service<Feedback> service;
 
     @BeforeEach
-    public void initEach() throws IOException , ComprimentoInvalidoException {
+    public void initEach() throws IOException, BusinessException {
         // Este trecho de código serve somente para limpar o repositório
         Files.walk(Paths.get("src/main/resources/data/feedback/"))
                 .filter(p -> p.toString().endsWith(".byte"))
@@ -58,7 +59,7 @@ public class FeedbackServiceTest {
     }
 
     @Test
-    public void salvar() throws ArquivoException, BusinessException, ComprimentoInvalidoException {
+    public void salvar() throws ArquivoException, BusinessException {
         Employee employeeNaoSalvo = new Employee("miguel", "vitor", "m.vitor@email.com");
 
         Feedback feedbackValido1 = new Feedback(localDate, autor, proprietario, LOREM_IPSUM_FEEDBACK);

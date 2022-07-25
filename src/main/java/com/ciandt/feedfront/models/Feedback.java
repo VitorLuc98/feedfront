@@ -16,6 +16,8 @@ public class Feedback implements Serializable {
     private String comoMelhora;
     private String arquivo;
 
+    private static final String REPOSITORIO_PATH = "src/main/resources/data/feedback/";
+
     public Feedback(LocalDate data, Employee autor, Employee proprietario, String descricao, String oqueMelhora, String comoMelhora) {
         this.id = UUID.randomUUID().toString();
         this.data = data;
@@ -24,6 +26,7 @@ public class Feedback implements Serializable {
         this.descricao = descricao;
         this.oqueMelhora = oqueMelhora;
         this.comoMelhora = comoMelhora;
+        this.arquivo = REPOSITORIO_PATH + this.id + ".byte";
     }
 
     public Feedback(LocalDate data, Employee autor, Employee proprietario, String descricao) {
@@ -32,6 +35,8 @@ public class Feedback implements Serializable {
         this.autor = autor;
         this.proprietario = proprietario;
         this.descricao = descricao;
+        this.arquivo = REPOSITORIO_PATH + this.id + ".byte";
+
     }
 
     public String getId() {

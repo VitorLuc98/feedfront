@@ -5,7 +5,7 @@ import com.ciandt.feedfront.excecoes.ArquivoException;
 import com.ciandt.feedfront.excecoes.ComprimentoInvalidoException;
 import com.ciandt.feedfront.excecoes.EmailInvalidoException;
 import com.ciandt.feedfront.excecoes.EmployeeNaoEncontradoException;
-import com.ciandt.feedfront.models.Employee;
+import com.ciandt.feedfront.employee.Employee;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
@@ -27,7 +27,7 @@ public class EmployeeTest {
         employee1 = new Employee("Jose", "Silveira", "j.silveira@email.com");
         employee2 = null;
 
-        Files.walk(Paths.get("src/main/resources/"))
+        Files.walk(Paths.get("src/main/resources/data/employee/"))
                 .filter(p -> p.toString().endsWith(".byte"))
                 .forEach(p -> {
                     new File(p.toString()).delete();

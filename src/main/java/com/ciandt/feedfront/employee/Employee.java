@@ -23,7 +23,7 @@ public class Employee implements Serializable {
     private String sobrenome;
     private String email;
 
-    private static final String REPOSITORIO_PATH = "src/main/resources/";
+    private static final String REPOSITORIO_PATH = "src/main/resources/data/employee/";
     private String arquivoCriado;
 
     public Employee(String nome, String sobrenome, String email) throws ComprimentoInvalidoException {
