@@ -4,14 +4,16 @@ import com.ciandt.feedfront.contracts.Service;
 import com.ciandt.feedfront.excecoes.ArquivoException;
 import com.ciandt.feedfront.excecoes.BusinessException;
 import com.ciandt.feedfront.models.Feedback;
+import com.ciandt.feedfront.services.FeedbackService;
 
+import java.io.IOException;
 import java.util.List;
 
 public class FeedbackController {
     private Service<Feedback> service;
 
     public FeedbackController() {
-        setService(service);
+        this.service = new FeedbackService();
     }
 
     public List<Feedback> listar() throws ArquivoException {
@@ -22,7 +24,7 @@ public class FeedbackController {
         return service.buscar(id);
     }
 
-    public Feedback salvar(Feedback feedback) throws BusinessException, ArquivoException {
+    public Feedback salvar(Feedback feedback) throws BusinessException, IOException {
         return service.salvar(feedback);
     }
 

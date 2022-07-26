@@ -4,14 +4,16 @@ import com.ciandt.feedfront.contracts.Service;
 import com.ciandt.feedfront.excecoes.ArquivoException;
 import com.ciandt.feedfront.excecoes.BusinessException;
 import com.ciandt.feedfront.models.Employee;
+import com.ciandt.feedfront.services.EmployeeService;
 
+import java.io.IOException;
 import java.util.List;
 
 public class EmployeeController {
     private Service<Employee> service;
 
     public EmployeeController() {
-        setService(service);
+        this.service = new EmployeeService();
     }
 
     public List<Employee> listar() throws ArquivoException {
@@ -22,7 +24,7 @@ public class EmployeeController {
         return service.buscar(id);
     }
 
-    public Employee salvar(Employee employee) throws BusinessException, ArquivoException {
+    public Employee salvar(Employee employee) throws BusinessException, IOException {
         return service.salvar(employee);
     }
 

@@ -2,19 +2,27 @@ package com.ciandt.feedfront.services;
 
 import com.ciandt.feedfront.contracts.DAO;
 import com.ciandt.feedfront.contracts.Service;
+import com.ciandt.feedfront.daos.EmployeeDAO;
+import com.ciandt.feedfront.daos.FeedbackDAO;
 import com.ciandt.feedfront.excecoes.ArquivoException;
 import com.ciandt.feedfront.excecoes.BusinessException;
+import com.ciandt.feedfront.excecoes.EntidadeNaoEncontradaException;
+import com.ciandt.feedfront.models.Employee;
 import com.ciandt.feedfront.models.Feedback;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 public class FeedbackService implements Service<Feedback> {
 
     private DAO<Feedback> dao;
 
+    private DAO<Employee> employeeDAO;
+
     public FeedbackService(){
-        setDAO(dao);
+        this.dao = new FeedbackDAO();
+        this.employeeDAO = new EmployeeDAO();
     }
     @Override
     public List<Feedback> listar() throws ArquivoException {
@@ -30,16 +38,17 @@ public class FeedbackService implements Service<Feedback> {
         try {
             return dao.buscar(id);
         } catch (IOException e) {
-            throw new BusinessException("Feedback não encontrado");
+            throw new EntidadeNaoEncontradaException("não foi possível encontrar o feedback");
         }
     }
 
     @Override
-    public Feedback salvar(Feedback feedback) throws ArquivoException, BusinessException, IllegalArgumentException {
+    public Feedback salvar(Feedback feedback) throws ArquivoException, BusinessException {
+        verificaFeedback(feedback);
         try {
             return dao.salvar(feedback);
         } catch (IOException e) {
-            throw new BusinessException("");
+            throw new EntidadeNaoEncontradaException("");
         }
     }
 
@@ -66,4 +75,18 @@ public class FeedbackService implements Service<Feedback> {
     public void setDAO(DAO<Feedback> dao) {
         this.dao = dao;
     }
+
+    private void verificaFeedback(Feedback feedback) {
+        if (feedback == null) {
+            throw  new IllegalArgumentException("feedback inválido");
+        }
+        if (feedback.getProprietario() == null){
+            throw new IllegalArgumentException("employee inválido");
+        }
+    }
+
+//    Employee employee = employeeDAO.buscar(feedback.getProprietario().getId());
+//        if (Objects.isNull(employee)){
+//        throw new EntidadeNaoEncontradaException("não foi possível encontrar o employee");
+//    }
 }

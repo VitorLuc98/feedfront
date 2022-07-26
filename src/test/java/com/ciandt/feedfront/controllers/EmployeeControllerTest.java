@@ -27,7 +27,7 @@ public class EmployeeControllerTest {
 
     @BeforeEach
     @SuppressWarnings("unchecked")
-    public void initEach() throws ArquivoException, BusinessException {
+    public void initEach() throws IOException, BusinessException {
         employeeController = new EmployeeController();
         employeeService = (Service<Employee>) Mockito.mock(Service.class);
         employee = new Employee("João", "Silveira", "j.silveira@email.com");

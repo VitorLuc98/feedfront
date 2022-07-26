@@ -53,7 +53,7 @@ public class FeedbackDAO implements DAO<Feedback> {
             feedback = (Feedback) objstream.readObject();
             objstream.close();
         } catch (IOException | ClassNotFoundException e) {
-            throw new EntidadeNaoSerializavelException();
+            throw new IOException();
         }
         return feedback;
     }
@@ -73,7 +73,7 @@ public class FeedbackDAO implements DAO<Feedback> {
 
     @Override
     public boolean apagar(String id) throws IOException, EntidadeNaoSerializavelException {
-        try{
+        try {
             Feedback feedback = buscar(id);
             Files.delete(Paths.get(feedback.getArquivo()));
             listar().remove(feedback);
@@ -83,7 +83,7 @@ public class FeedbackDAO implements DAO<Feedback> {
         return true;
     }
 
-    private List<String> buscarArquivosPorPath(Stream<Path> paths){
+    private List<String> buscarArquivosPorPath(Stream<Path> paths) {
         return paths.map(p -> p.getFileName().toString())
                 .filter(p -> p.endsWith(".byte"))
                 .map(y -> y.replace(REPOSITORIO_PATH, ""))
