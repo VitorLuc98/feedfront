@@ -84,7 +84,7 @@ public class FeedbackService implements Service<Feedback> {
         if (feedback.getProprietario() == null) {
             throw new IllegalArgumentException("employee inválido");
         }
-//    Employee employee = employeeService.buscar(feedback.getProprietario().getId());
+    Employee employee = employeeService.buscar(feedback.getProprietario().getId());
     }
 
     public void setEmployeeService(Service<Employee> employeeService) {
