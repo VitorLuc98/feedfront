@@ -13,7 +13,7 @@ public class FeedbackController {
     private Service<Feedback> service;
 
     public FeedbackController() {
-        this.service = new FeedbackService();
+        setService(new FeedbackService());
     }
 
     public List<Feedback> listar() throws ArquivoException {

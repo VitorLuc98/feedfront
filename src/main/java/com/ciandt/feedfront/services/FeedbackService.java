@@ -18,12 +18,13 @@ public class FeedbackService implements Service<Feedback> {
 
     private DAO<Feedback> dao;
 
-    private DAO<Employee> employeeDAO;
+    private Service<Employee> employeeService;
 
-    public FeedbackService(){
-        this.dao = new FeedbackDAO();
-        this.employeeDAO = new EmployeeDAO();
+    public FeedbackService() {
+        setDAO(new FeedbackDAO());
+        setEmployeeService(new EmployeeService());
     }
+
     @Override
     public List<Feedback> listar() throws ArquivoException {
         try {
@@ -76,17 +77,18 @@ public class FeedbackService implements Service<Feedback> {
         this.dao = dao;
     }
 
-    private void verificaFeedback(Feedback feedback) {
+    private void verificaFeedback(Feedback feedback) throws BusinessException, ArquivoException {
         if (feedback == null) {
-            throw  new IllegalArgumentException("feedback inválido");
+            throw new IllegalArgumentException("feedback inválido");
         }
-        if (feedback.getProprietario() == null){
+        if (feedback.getProprietario() == null) {
             throw new IllegalArgumentException("employee inválido");
         }
+//    Employee employee = employeeService.buscar(feedback.getProprietario().getId());
     }
 
-//    Employee employee = employeeDAO.buscar(feedback.getProprietario().getId());
-//        if (Objects.isNull(employee)){
-//        throw new EntidadeNaoEncontradaException("não foi possível encontrar o employee");
-//    }
+    public void setEmployeeService(Service<Employee> employeeService) {
+        this.employeeService = employeeService;
+    }
+
 }
