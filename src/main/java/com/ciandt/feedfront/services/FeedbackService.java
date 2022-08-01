@@ -2,7 +2,9 @@ package com.ciandt.feedfront.services;
 
 import com.ciandt.feedfront.contracts.DAO;
 import com.ciandt.feedfront.contracts.Service;
+import com.ciandt.feedfront.daos.FeedbackDAO;
 import com.ciandt.feedfront.excecoes.BusinessException;
+import com.ciandt.feedfront.excecoes.EntidadeNaoEncontradaException;
 import com.ciandt.feedfront.models.Employee;
 import com.ciandt.feedfront.models.Feedback;
 
@@ -12,19 +14,27 @@ public class FeedbackService implements Service<Feedback> {
     private DAO<Feedback> dao;
     private Service<Employee> employeeService;
 
+    public FeedbackService() {
+        setDAO(new FeedbackDAO());
+        setEmployeeService(new EmployeeService());
+    }
+
     @Override
     public List<Feedback> listar() {
-        throw new UnsupportedOperationException();
+        return dao.listar();
     }
 
     @Override
     public Feedback buscar(long id) throws BusinessException {
-        throw new UnsupportedOperationException();
+        return dao.buscar(id).orElseThrow(() -> new EntidadeNaoEncontradaException("Feedback não existe"));
     }
 
     @Override
     public Feedback salvar(Feedback feedback) throws BusinessException, IllegalArgumentException {
-        throw new UnsupportedOperationException();
+        if (feedback == null) {
+            throw new IllegalArgumentException();
+        }
+        return dao.salvar(feedback);
     }
 
     @Override
@@ -39,10 +49,10 @@ public class FeedbackService implements Service<Feedback> {
 
     @Override
     public void setDAO(DAO<Feedback> dao) {
-        throw new UnsupportedOperationException();
+        this.dao = dao;
     }
 
     public void setEmployeeService(Service<Employee> employeeService) {
-        throw new UnsupportedOperationException();
+        this.employeeService = employeeService;
     }
 }

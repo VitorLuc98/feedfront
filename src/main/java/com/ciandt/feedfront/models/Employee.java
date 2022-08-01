@@ -4,12 +4,15 @@ import com.ciandt.feedfront.excecoes.ComprimentoInvalidoException;
 
 import javax.persistence.*;
 import java.util.List;
-
+@Entity
 public class Employee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nome;
-
+    @Column(nullable = false)
     private String sobrenome;
 
     @Column(unique = true)
@@ -25,17 +28,24 @@ public class Employee {
     }
 
     public Employee(String nome, String sobrenome, String email) throws ComprimentoInvalidoException {
-        throw new UnsupportedOperationException();
+        this.nome = nome;
+        this.sobrenome = sobrenome;
+        this.email = email;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        throw new UnsupportedOperationException();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Employee)) return false;
+
+        Employee employee = (Employee) o;
+
+        return id.equals(employee.id);
     }
 
     @Override
     public int hashCode() {
-        throw new UnsupportedOperationException();
+        return id.hashCode();
     }
 
     public Long getId() {
@@ -86,5 +96,15 @@ public class Employee {
         this.feedbackRecebidos = feedbackRecebidos;
     }
 
-    // TODO: implementar toString
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", sobrenome='" + sobrenome + '\'' +
+                ", email='" + email + '\'' +
+                ", feedbackFeitos=" + feedbackFeitos +
+                ", feedbackRecebidos=" + feedbackRecebidos +
+                '}';
+    }
 }
