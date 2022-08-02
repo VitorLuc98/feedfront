@@ -13,7 +13,7 @@ public class EmployeeDAO implements DAO<Employee> {
     private EntityManager entityManager;
 
     public EmployeeDAO() {
-        setEntityManager(PersistenceUtil.getEntityManagerFactory().createEntityManager());
+        this.entityManager = PersistenceUtil.getEntityManager();
     }
 
     @Override
@@ -25,9 +25,7 @@ public class EmployeeDAO implements DAO<Employee> {
 
     @Override
     public Optional<Employee> buscar(long id) {
-        abrirT();
         Employee employee = entityManager.find(Employee.class, id);
-        fecharT();
         return Optional.ofNullable(employee);
     }
 

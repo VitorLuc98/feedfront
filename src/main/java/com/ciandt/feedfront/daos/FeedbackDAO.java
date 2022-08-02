@@ -13,7 +13,7 @@ public class FeedbackDAO implements DAO<Feedback> {
     private EntityManager entityManager;
 
     public FeedbackDAO() {
-        setEntityManager(PersistenceUtil.getEntityManagerFactory().createEntityManager());
+        setEntityManager(PersistenceUtil.getEntityManager());
     }
 
     @Override
