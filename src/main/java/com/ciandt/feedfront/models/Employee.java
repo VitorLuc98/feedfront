@@ -4,6 +4,8 @@ import com.ciandt.feedfront.excecoes.ComprimentoInvalidoException;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
+
 @Entity
 public class Employee {
     @Id
@@ -18,10 +20,10 @@ public class Employee {
     @Column(unique = true)
     private String email;
 
-    @OneToMany(mappedBy = "autor", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "autor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Feedback> feedbackFeitos;
 
-    @OneToMany(mappedBy = "proprietario", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "proprietario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Feedback> feedbackRecebidos;
 
     public Employee() {
@@ -34,21 +36,19 @@ public class Employee {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(id, nome, sobrenome, email, feedbackFeitos, feedbackRecebidos);
+    }
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Employee)) return false;
-
+        if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-
-        return id.equals(employee.id);
+        return Objects.equals(id, employee.id) && Objects.equals(nome, employee.nome) && Objects.equals(sobrenome, employee.sobrenome) && Objects.equals(email, employee.email) && Objects.equals(feedbackFeitos, employee.feedbackFeitos) && Objects.equals(feedbackRecebidos, employee.feedbackRecebidos);
     }
 
-    @Override
-    public int hashCode() {
-        return id.hashCode();
-    }
-
-    public Long getId() {
+	public Long getId() {
         return id;
     }
 

@@ -79,7 +79,7 @@ public class EmployeeServiceTest {
     }
 
     @Test
-    public void salvar() throws ComprimentoInvalidoException {
+    public void salvar() throws BusinessException {
         Employee employeeValido = new Employee("João", "Silveira", "joao.silveira@email.com");
         Employee employeeInvalido = new Employee("José", "Silveira", "j.silveira@email.com");
 

@@ -3,10 +3,13 @@ package com.ciandt.feedfront.services;
 import com.ciandt.feedfront.contracts.DAO;
 import com.ciandt.feedfront.contracts.Service;
 import com.ciandt.feedfront.daos.EmployeeDAO;
+import com.ciandt.feedfront.excecoes.EmailInvalidoException;
 import com.ciandt.feedfront.excecoes.EntidadeNaoEncontradaException;
 import com.ciandt.feedfront.models.Employee;
 import com.ciandt.feedfront.excecoes.BusinessException;
+import org.hibernate.exception.ConstraintViolationException;
 
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 public class EmployeeService implements Service<Employee> {
@@ -28,23 +31,33 @@ public class EmployeeService implements Service<Employee> {
 
     @Override
     public Employee salvar(Employee employee) throws BusinessException {
+        validaEmployee(employee);
         return dao.salvar(employee);
     }
 
     @Override
     public Employee atualizar(Employee employee) throws BusinessException {
-        Employee employeeSalvo = buscar(employee.getId());
-        employeeSalvo.setNome(employee.getNome());
-        employeeSalvo.setSobrenome(employee.getSobrenome());
-        employeeSalvo.setEmail(employee.getEmail());
-        employeeSalvo.setFeedbackFeitos(employee.getFeedbackFeitos());
-        employeeSalvo.setFeedbackRecebidos(employee.getFeedbackRecebidos());
-        return dao.salvar(employeeSalvo);
+        validaEmployee(employee);
+        if (employee.getId()== null){
+            throw new IllegalArgumentException("employee inválido: não possui ID");
+        }
+        return dao.salvar(employee);
     }
 
     @Override
     public void apagar(long id) throws BusinessException {
+        buscar(id);
         dao.apagar(id);
+    }
+
+    private void validaEmployee(Employee employee) throws EmailInvalidoException {
+        if (employee == null){
+            throw new IllegalArgumentException();
+        }
+        boolean isEmailvalido = dao.listar().stream().anyMatch(x -> !x.getId().equals(employee.getId()) && x.getEmail().equals(employee.getEmail()));
+        if (isEmailvalido){
+            throw new EmailInvalidoException("já existe um employee cadastrado com esse e-mail");
+        }
     }
 
     @Override

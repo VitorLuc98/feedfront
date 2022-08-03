@@ -44,7 +44,7 @@ public class EmployeeDAOTest {
         entityManager.createQuery("delete from Employee e where 1 = 1").executeUpdate();
         entityManager.getTransaction().commit();
 
-        employeeDAO.salvar(employee);
+        employee = employeeDAO.salvar(employee);
     }
 
     @AfterEach

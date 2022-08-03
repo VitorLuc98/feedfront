@@ -52,7 +52,7 @@ public class FeedbackDAOTest {
         entityManager.persist(proprietario);
         entityManager.getTransaction().commit();
 
-        feedbackDAO.salvar(feedback);
+        feedback = feedbackDAO.salvar(feedback);
     }
 
     @AfterEach

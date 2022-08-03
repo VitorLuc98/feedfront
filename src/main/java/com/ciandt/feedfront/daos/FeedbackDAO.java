@@ -18,18 +18,13 @@ public class FeedbackDAO implements DAO<Feedback> {
 
     @Override
     public List<Feedback> listar() {
-        abrirT();
         String jpql = "SELECT f FROM Feedback f";
-        TypedQuery<Feedback> query = entityManager.createQuery(jpql, Feedback.class);
-        fecharT();
-        return query.getResultList();
+        return entityManager.createQuery(jpql, Feedback.class).getResultList();
     }
 
     @Override
     public Optional<Feedback> buscar(long id) {
-        abrirT();
         Feedback feedback = entityManager.find(Feedback.class, id);
-        fecharT();
         return Optional.ofNullable(feedback);
 
     }
@@ -37,7 +32,7 @@ public class FeedbackDAO implements DAO<Feedback> {
     @Override
     public Feedback salvar(Feedback feedback) {
         abrirT();
-        entityManager.persist(feedback);
+        feedback = entityManager.merge(feedback);
         fecharT();
         return feedback;
     }

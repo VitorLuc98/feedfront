@@ -3,6 +3,7 @@ package com.ciandt.feedfront.daos;
 import com.ciandt.feedfront.contracts.DAO;
 import com.ciandt.feedfront.models.Employee;
 import com.ciandt.feedfront.utils.PersistenceUtil;
+import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
@@ -32,8 +33,9 @@ public class EmployeeDAO implements DAO<Employee> {
     @Override
     public Employee salvar(Employee employee) {
         abrirT();
-        entityManager.persist(employee);
+        employee = entityManager.merge(employee);
         fecharT();
+        entityManager.clear();
         return employee;
     }
 
@@ -44,6 +46,7 @@ public class EmployeeDAO implements DAO<Employee> {
             abrirT();
             entityManager.remove(employee.get());
             fecharT();
+            entityManager.clear();
             return true;
         }
         return false;
