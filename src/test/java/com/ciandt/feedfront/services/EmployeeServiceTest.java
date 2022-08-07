@@ -101,7 +101,7 @@ public class EmployeeServiceTest {
         employee.setEmail("joao.silveira@email.com");
 
         when(employeeRepository.save(employee)).thenReturn(employee);
-        when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
+//        when(employeeRepository.findById(employee.getId())).thenReturn(Optional.of(employee));
 
         Employee employeeSalvo = assertDoesNotThrow(() -> employeeService.atualizar(employee));
 

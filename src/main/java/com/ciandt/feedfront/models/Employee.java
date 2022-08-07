@@ -10,6 +10,9 @@ import org.hibernate.validator.constraints.Length;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -29,12 +32,15 @@ public class Employee implements Serializable {
     private Long id;
 
     @Column(nullable = false)
+    @Size(min = 3, message = "O Nome deve ter mais de 2 caracteres")
     private String nome;
 
     @Column(nullable = false)
+    @Size(min = 3, message = "O Sobrenome deve ter mais de 2 caracteres")
     private String sobrenome;
 
     @Column(unique = true)
+    @Email(message = "Email inválido.")
     private String email;
 
     @OneToMany(mappedBy = "autor", fetch = FetchType.LAZY)

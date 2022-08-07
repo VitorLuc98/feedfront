@@ -45,4 +45,10 @@ public class Feedback implements Serializable {
     @JoinColumn(name = "proprietario_id", nullable = false)
     private Employee proprietario;
 
+    public Feedback(LocalDate data, Employee autor, Employee proprietario, String descrição) {
+        this.data = data;
+        this.autor = autor;
+        this.proprietario = proprietario;
+        this.descricao = descrição;
+    }
 }
