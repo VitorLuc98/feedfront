@@ -8,6 +8,7 @@ import com.ciandt.feedfront.repositories.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.function.Predicate;
@@ -49,6 +50,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeRepository.existsByEmail(employee.getEmail())){
             throw new EmailInvalidoException("já existe um employee cadastrado com esse e-mail");
         }
+        buscar(employee.getId());
         employee = employeeRepository.save(employee);
         return employee;
     }
