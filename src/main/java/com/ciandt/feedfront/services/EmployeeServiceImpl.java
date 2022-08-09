@@ -6,12 +6,12 @@ import com.ciandt.feedfront.exceptions.EntidadeNaoEncontradaException;
 import com.ciandt.feedfront.models.Employee;
 import com.ciandt.feedfront.repositories.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.PersistenceException;
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.function.Predicate;
 
 @Service
 @Transactional
@@ -32,26 +32,37 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee salvar(Employee employee) throws BusinessException {
-        if (employeeRepository.existsByEmail(employee.getEmail())){
+        if (employee == null) {
+            throw new IllegalArgumentException("employee inválido");
+        }
+//        if (employeeRepository.existsByEmail(employee.getEmail())){
+//            throw new EmailInvalidoException("já existe um employee cadastrado com esse e-mail");
+//        }
+        try{
+            employee = employeeRepository.save(employee);
+        }catch (PersistenceException e){
             throw new EmailInvalidoException("já existe um employee cadastrado com esse e-mail");
         }
-        employee = employeeRepository.save(employee);
         return employee;
     }
 
     @Override
     public Employee atualizar(Employee employee) throws BusinessException {
-        if (employee == null){
+        if (employee == null) {
             throw new IllegalArgumentException();
         }
-        if (employee.getId() == null){
+        if (employee.getId() == null) {
             throw new IllegalArgumentException("employee inválido: não possui ID");
         }
-        if (employeeRepository.existsByEmail(employee.getEmail())){
+//        if (employeeRepository.existsByEmail(employee.getEmail())){
+//            throw new EmailInvalidoException("já existe um employee cadastrado com esse e-mail");
+//        }
+        buscar(employee.getId());
+        try{
+            employee = employeeRepository.save(employee);
+        }catch (PersistenceException e){
             throw new EmailInvalidoException("já existe um employee cadastrado com esse e-mail");
         }
-        buscar(employee.getId());
-        employee = employeeRepository.save(employee);
         return employee;
     }
 

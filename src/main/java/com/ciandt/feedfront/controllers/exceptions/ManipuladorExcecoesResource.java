@@ -2,6 +2,7 @@ package com.ciandt.feedfront.controllers.exceptions;
 
 import com.ciandt.feedfront.exceptions.EmailInvalidoException;
 import com.ciandt.feedfront.exceptions.EntidadeNaoEncontradaException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -22,10 +23,17 @@ public class ManipuladorExcecoesResource {
         return ResponseEntity.status(status).body(error);
     }
 
-    @ExceptionHandler(EmailInvalidoException.class)
-    public ResponseEntity<ErroPadrao> emailInvalido(EmailInvalidoException e, HttpServletRequest request){
+//    @ExceptionHandler(EmailInvalidoException.class)
+//    public ResponseEntity<ErroPadrao> emailInvalido(EmailInvalidoException e, HttpServletRequest request){
+//        HttpStatus status = HttpStatus.BAD_REQUEST;
+//        ErroPadrao error = new ErroPadrao(LocalDateTime.now(), status.value(), e.getMessage(), request.getRequestURI());
+//        return ResponseEntity.status(status).body(error);
+//    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErroPadrao> emailInvalido(DataIntegrityViolationException e, HttpServletRequest request){
         HttpStatus status = HttpStatus.BAD_REQUEST;
-        ErroPadrao error = new ErroPadrao(LocalDateTime.now(), status.value(), e.getMessage(), request.getRequestURI());
+        ErroPadrao error = new ErroPadrao(LocalDateTime.now(), status.value(), "já existe um employee cadastrado com esse e-mail", request.getRequestURI());
         return ResponseEntity.status(status).body(error);
     }
 
